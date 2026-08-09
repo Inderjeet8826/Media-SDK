@@ -1,0 +1,27 @@
+{
+  "name": "@headless-media/ui-react",
+  "version": "1.0.0",
+  "description": "Headless, accessible UI component primitives for media feeds, grids, lightboxes, and vertical reel swipers",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "keywords": ["headless", "ui", "components", "grid", "lightbox", "reel-swiper", "accessibility"],
+  "author": "",
+  "license": "MIT"
+}

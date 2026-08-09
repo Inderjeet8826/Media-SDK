@@ -1,0 +1,34 @@
+{
+  "name": "@headless-media/native",
+  "version": "1.0.0",
+  "description": "React Native integration and hooks for @headless-media/core",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --emitDeclarationOnly && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-native": "*"
+  },
+  "peerDependenciesMeta": {
+    "react-native": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@headless-media/core": "*"
+  },
+  "keywords": ["react-native", "media", "sdk", "hooks", "pexels"],
+  "author": "",
+  "license": "MIT"
+}
