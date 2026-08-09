@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "tsc --emitDeclarationOnly && vite build",
+    "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

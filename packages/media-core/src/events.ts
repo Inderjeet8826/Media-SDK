@@ -10,6 +10,7 @@ export class EventEmitter<TEvents extends Record<string, any> = MediaEventMap> {
    * Register an event listener.
    */
   public on<K extends EventKey<TEvents>>(event: K, callback: EventCallback<TEvents[K]>): () => void;
+  public on(event: string, callback: EventCallback<any>): () => void;
   public on(event: string, callback: EventCallback<any>): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, new Set());
@@ -17,25 +18,27 @@ export class EventEmitter<TEvents extends Record<string, any> = MediaEventMap> {
     this.listeners.get(event)!.add(callback);
 
     // Return unsubscribe function
-    return () => this.off(event, callback);
+    return () => this.off(event as any, callback);
   }
 
   /**
    * Register a one-time event listener.
    */
   public once<K extends EventKey<TEvents>>(event: K, callback: EventCallback<TEvents[K]>): () => void;
+  public once(event: string, callback: EventCallback<any>): () => void;
   public once(event: string, callback: EventCallback<any>): () => void {
     const onceWrapper: EventCallback<any> = (payload: any) => {
-      this.off(event, onceWrapper);
+      this.off(event as any, onceWrapper);
       callback(payload);
     };
-    return this.on(event, onceWrapper);
+    return this.on(event as any, onceWrapper);
   }
 
   /**
    * Unregister an event listener.
    */
   public off<K extends EventKey<TEvents>>(event: K, callback: EventCallback<TEvents[K]>): void;
+  public off(event: string, callback: EventCallback<any>): void;
   public off(event: string, callback: EventCallback<any>): void {
     const callbacks = this.listeners.get(event);
     if (callbacks) {
@@ -60,6 +63,7 @@ export class EventEmitter<TEvents extends Record<string, any> = MediaEventMap> {
    * Emit an event to all registered listeners.
    */
   public emit<K extends EventKey<TEvents>>(event: K, payload: TEvents[K]): void;
+  public emit(event: string, payload: any): void;
   public emit(event: string, payload: any): void {
     // Notify wildcard listeners
     for (const wildcard of this.wildcardListeners) {

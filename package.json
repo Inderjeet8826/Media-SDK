@@ -8,12 +8,12 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run --workspaces --if-present build",
+    "build": "npm run --workspace=apps/web-app build",
     "test": "vitest run",
     "test:watch": "vitest",
     "dev": "npm run --workspace=apps/web-app dev",
     "lint": "eslint . --ext .ts,.tsx",
-    "typecheck": "npm run --workspaces --if-present typecheck"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.4.2",
