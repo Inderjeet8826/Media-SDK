@@ -1,17 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MediaProvider } from '@headless-media/react';
 import { PhotoView } from './components/PhotoView';
 import { CuratedView } from './components/CuratedView';
 import { VideoReelsView } from './components/VideoReelsView';
 import { ArchitectureView } from './components/ArchitectureView';
+import { SdkDocsView } from './components/SdkDocsView';
+import { ComponentDocsView } from './components/ComponentDocsView';
 import { EventDrawer } from './components/EventDrawer';
 import { ApiKeyModal } from './components/ApiKeyModal';
 
-type TabType = 'photos' | 'curated' | 'reels' | 'architecture';
+export type TabType = 'photos' | 'curated' | 'reels' | 'architecture' | 'sdk-docs' | 'components-docs';
 
 const AppContent: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('photos');
+  const getInitialTab = (): TabType => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace('#', '');
+      if (['photos', 'curated', 'reels', 'architecture', 'sdk-docs', 'components-docs'].includes(hash)) {
+        return hash as TabType;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam && ['photos', 'curated', 'reels', 'architecture', 'sdk-docs', 'components-docs'].includes(tabParam)) {
+        return tabParam as TabType;
+      }
+    }
+    return 'photos';
+  };
+
+  const [activeTab, setActiveTab] = useState<TabType>(getInitialTab);
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState<boolean>(false);
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      window.location.hash = tab;
+    }
+  };
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (['photos', 'curated', 'reels', 'architecture', 'sdk-docs', 'components-docs'].includes(hash)) {
+        setActiveTab(hash as TabType);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   return (
     <div className="app-container">
@@ -26,10 +61,10 @@ const AppContent: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <nav className="nav-tabs" role="tablist">
+        <nav className="nav-tabs" role="tablist" style={{ flexWrap: 'wrap' }}>
           <button
             className={`nav-tab ${activeTab === 'photos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('photos')}
+            onClick={() => handleTabChange('photos')}
             role="tab"
             aria-selected={activeTab === 'photos'}
           >
@@ -37,7 +72,7 @@ const AppContent: React.FC = () => {
           </button>
           <button
             className={`nav-tab ${activeTab === 'curated' ? 'active' : ''}`}
-            onClick={() => setActiveTab('curated')}
+            onClick={() => handleTabChange('curated')}
             role="tab"
             aria-selected={activeTab === 'curated'}
           >
@@ -45,7 +80,7 @@ const AppContent: React.FC = () => {
           </button>
           <button
             className={`nav-tab ${activeTab === 'reels' ? 'active' : ''}`}
-            onClick={() => setActiveTab('reels')}
+            onClick={() => handleTabChange('reels')}
             role="tab"
             aria-selected={activeTab === 'reels'}
           >
@@ -53,11 +88,27 @@ const AppContent: React.FC = () => {
           </button>
           <button
             className={`nav-tab ${activeTab === 'architecture' ? 'active' : ''}`}
-            onClick={() => setActiveTab('architecture')}
+            onClick={() => handleTabChange('architecture')}
             role="tab"
             aria-selected={activeTab === 'architecture'}
           >
             🏛️ Architecture & Cache
+          </button>
+          <button
+            className={`nav-tab ${activeTab === 'sdk-docs' ? 'active' : ''}`}
+            onClick={() => handleTabChange('sdk-docs')}
+            role="tab"
+            aria-selected={activeTab === 'sdk-docs'}
+          >
+            📖 SDK Docs
+          </button>
+          <button
+            className={`nav-tab ${activeTab === 'components-docs' ? 'active' : ''}`}
+            onClick={() => handleTabChange('components-docs')}
+            role="tab"
+            aria-selected={activeTab === 'components-docs'}
+          >
+            🧩 Component Docs
           </button>
         </nav>
 
@@ -84,6 +135,8 @@ const AppContent: React.FC = () => {
         {activeTab === 'curated' && <CuratedView />}
         {activeTab === 'reels' && <VideoReelsView />}
         {activeTab === 'architecture' && <ArchitectureView />}
+        {activeTab === 'sdk-docs' && <SdkDocsView />}
+        {activeTab === 'components-docs' && <ComponentDocsView />}
       </main>
 
       {/* Persistent Live Event Inspector */}
